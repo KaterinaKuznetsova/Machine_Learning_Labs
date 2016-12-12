@@ -4,11 +4,11 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 
-
+# загрузка датасета
 def load_data(filename):
     return pd.read_csv(filename, header=None).values
 
-
+# разделение датасета на тестовую и обучающую выборку
 def split_dataset(test_size):
     dataset = load_data('zoo.data.csv')
     animal_attr = dataset[:, 1:-1]
@@ -58,7 +58,7 @@ def summarize_by_class(data_train, class_train):
 # вычисление апостериорной вероятности принадлежности объекта к определенному классу
 def calc_probability(x, mean, stdev):
     if stdev == 0:
-        stdev += 0.00001  # добавляем эпсилон, если дисперсия равна 0
+        stdev += 0.000001  # добавляем эпсилон, если дисперсия равна 0
     exponent = math.exp(-(math.pow(x - mean, 2) / (2 * math.pow(stdev, 2))))
     return (1 / (math.sqrt(2 * math.pi) * stdev)) * exponent
 
@@ -87,7 +87,7 @@ def predict_one(summaries, instance_attr):
     return best_class
 
 
-# классификация тренировочной выборки
+# классификация тестовой выборки
 def predict(summaries, data_test):
     predictions = []
     for i in range(len(data_test)):
@@ -96,9 +96,10 @@ def predict(summaries, data_test):
     return predictions
 
 
-# классификация тестовой выборки, сравнение результатов классификации с реальными, вычисление точности классификации
+# сравнение результатов классификации с реальными, вычисление точности классификации
 def calc_accuracy(summaries, data_test, class_test):
     correct_answ = 0
+    # классификация тестовой выборки
     predictions = predict(summaries, data_test)
     for i in range(len(data_test)):
         if class_test[i] == predictions[i]:
